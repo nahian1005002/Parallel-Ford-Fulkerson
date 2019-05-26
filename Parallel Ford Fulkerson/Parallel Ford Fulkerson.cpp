@@ -8,6 +8,7 @@
 #include<algorithm>
 #include<vector>
 #include<set>
+#include "ClassicalFordFulkerson.h"
 
 using namespace std;
 
@@ -76,6 +77,9 @@ int main()
 {
     std::cout << "Hello World!\n";
 	generateInput();
+	ClassicalFordFulkerson classical("input.txt");
+	classical.run();
+
 	return 0;
 }
 

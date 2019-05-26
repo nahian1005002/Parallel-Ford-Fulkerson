@@ -4,6 +4,21 @@
 
 using namespace std;
 
+int ClassicalFordFulkerson::getEdgeIndex(int u, int v)
+{
+	int i;
+	for ( i = 0; i < edges[u].size(); i++)
+	{
+		if (edges[u][i].first == v)
+			break;
+	}
+	if (i < edges[u].size())
+		return i;
+	else
+		return -1;
+		
+}
+
 void ClassicalFordFulkerson::input()
 {
 	myfile >> V >> E;
@@ -29,6 +44,13 @@ void ClassicalFordFulkerson::run()
 	for (int it = 0; it < numberOfCases; it++)
 	{
 		input();
+		for (int i = 0; i < V; i++)
+			omp_init_lock(&lck[i]);
+
+		cout << fordFulkerson()<<endl;
+
+		for (int i = 0; i < V; i++)
+			omp_destroy_lock(&lck[i]);
 	}
 	
 }
@@ -40,64 +62,88 @@ void ClassicalFordFulkerson::init()
 		state[i] = unlabeled;
 		parent[i] = -1;
 		label[i] = 0;
+		labelType[i] = NULL;
 	}
 
 }
 
-void ClassicalFordFulkerson::fordFulkerson()
+int ClassicalFordFulkerson::fordFulkerson()
 {
-	init(); // intializing
-	state[0] = unscanned;
-	label[0] = INF;
-	while (state[V - 1] == unlabeled)
+	int flag = 1;
+	int maxFlow=0;
+	while (flag)
 	{
-		for (int i = 0; i < V; i++)
-			nextState[i] = state[i];
-
-		for (int i = 0; i < V; i++)
+		init(); // intializing
+		state[0] = unscanned;
+		label[0] = INF;
+		while (state[V - 1] == unlabeled && flag)
 		{
-		/*	if (!omp_test_lock(&lck[i]))
-				continue;
-			int flag = 0;
-			omp_set_lock(&lck[i]);*/
+			flag = 0;
+			for (int i = 0; i < V; i++)
+				nextState[i] = state[i];
 
-			for (int j = 0; j < edges[i].size(); j++)
+			for (int i = 0; i < V; i++)
 			{
-				int u = i, v = edges[i][j].first;
-				grabLock(u, v);
-			//	omp_set_lock(&lck[v]);
-				if (state[u] == unscanned && state[v] == unlabeled && flow[u][j].second < edges[u][j].second)
-				{
-					label[v] = min(label[u], edges[u][j].second - flow[u][j].second);
-					parent[v] = u;
 
-				//	flag = 1;
-				//	state[v] = unscanned;
-					nextState[u] = scanned;
-					nextState[v] = unscanned;
-				}
-				else if (state[v] == unscanned && state[u] == unlabeled && flow[u][j].second > 0)
+				for (int j = 0; j < edges[i].size(); j++)
 				{
-					label[u] = -min(label[v], flow[u][j].second);
-					parent[u] = v;
+					int u = i, v = edges[i][j].first;
+					grabLock(u, v);
+					//	omp_set_lock(&lck[v]);
+					if (state[u] == unscanned && state[v] == unlabeled && flow[u][j].second < edges[u][j].second)
+					{
+						label[v] = min(label[u], edges[u][j].second - flow[u][j].second);
+						parent[v] = u;
+						labelType[v] = '+';
 
-					nextState[v] = scanned;
-					nextState[u] = unscanned;
-				//	state[u] = unscanned;
-				//	state[v] = scanned;
-				//	break;
+						nextState[u] = scanned;
+						nextState[v] = unscanned;
+						flag = 1;
+					}
+					else if (state[v] == unscanned && state[u] == unlabeled && flow[u][j].second > 0)
+					{
+						label[u] = min(label[v], flow[u][j].second);
+						parent[u] = v;
+						labelType[u] = '-';
+
+						nextState[v] = scanned;
+						nextState[u] = unscanned;
+						flag = 1;
+					}
+					omp_unset_lock(&lck[u]);
+					omp_unset_lock(&lck[v]);
 				}
+
 			}
 
-		/*	if (flag == 1 && state[i] == unscanned)
+			for (int i = 0; i < V; i++)
+				state[i] = nextState[i];
+		}
+		if (!flag)
+			break;
+		int x = V - 1;
+		int y;
+		maxFlow += label[V - 1];
+		while (x != 0)
+		{
+			y = parent[x];
+			if (labelType[x] == '+')
 			{
-				state[i] = scanned;
-			}*/
+				int j = getEdgeIndex(y, x);
+				assert(j >=0);
+				flow[y][j].second += label[V-1];
+			}
+			else if (labelType[x] == '-')
+			{
+				int j = getEdgeIndex(x, y);
+				assert(j >= 0);
+				flow[x][j].second -= label[V-1];
+			}
+			x = y;
 		}
 
-		for (int i = 0; i < V; i++)
-			state[i] = nextState[i];
 	}
+	return maxFlow;
 }
 
 void ClassicalFordFulkerson::grabLock(int u, int v)

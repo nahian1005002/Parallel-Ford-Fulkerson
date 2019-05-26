@@ -5,6 +5,8 @@
 #include<utility>
 #include<algorithm>
 #include<omp.h>
+#include<cassert>
+#include<string>
 
 #define MAXNODES 1000
 #define INF 99999999
@@ -27,14 +29,17 @@ class ClassicalFordFulkerson
 	omp_lock_t lck[MAXNODES];
 	int parent[MAXNODES];
 	int label[MAXNODES];
+	char labelType[MAXNODES];
 	int state[MAXNODES];
 	int nextState[MAXNODES];
-	ClassicalFordFulkerson() {
-		myfile.open("input.txt");
-	}
+	int getEdgeIndex(int u, int v);
 	void input();
-	void run();
 	void init();
-	void fordFulkerson();
+	int fordFulkerson();
 	void grabLock(int u, int v);
+public:
+	ClassicalFordFulkerson(std::string filePath) {
+		myfile.open(filePath);
+	}
+	void run();
 };
