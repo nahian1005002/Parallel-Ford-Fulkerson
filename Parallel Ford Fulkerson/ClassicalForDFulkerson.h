@@ -20,7 +20,9 @@ enum States
 
 class ClassicalFordFulkerson
 {
+protected:
 	std::ifstream myfile;
+	std::string filePath;
 	int numberOfCases;
 	int V, E;
 	std::vector<std::pair<int,int> > edges[MAXNODES];
@@ -39,7 +41,7 @@ class ClassicalFordFulkerson
 	void grabLock(int u, int v);
 public:
 	ClassicalFordFulkerson(std::string filePath) {
-		myfile.open(filePath);
+		this->filePath = filePath;
 	}
 	void run();
 };

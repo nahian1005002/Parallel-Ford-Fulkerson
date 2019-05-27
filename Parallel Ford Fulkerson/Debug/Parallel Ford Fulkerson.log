@@ -1,5 +1,11 @@
 ﻿  ClassicalForDFulkerson.cpp
-c:\users\nahian\source\repos\parallel ford fulkerson\parallel ford fulkerson\classicalfordfulkerson.cpp(10): warning C4018: '<': signed/unsigned mismatch
-c:\users\nahian\source\repos\parallel ford fulkerson\parallel ford fulkerson\classicalfordfulkerson.cpp(15): warning C4018: '<': signed/unsigned mismatch
-c:\users\nahian\source\repos\parallel ford fulkerson\parallel ford fulkerson\classicalfordfulkerson.cpp(88): warning C4018: '<': signed/unsigned mismatch
+c:\users\nahian\source\repos\parallel ford fulkerson\parallel ford fulkerson\classicalfordfulkerson.cpp(11): warning C4018: '<': signed/unsigned mismatch
+c:\users\nahian\source\repos\parallel ford fulkerson\parallel ford fulkerson\classicalfordfulkerson.cpp(16): warning C4018: '<': signed/unsigned mismatch
+c:\users\nahian\source\repos\parallel ford fulkerson\parallel ford fulkerson\classicalfordfulkerson.cpp(96): warning C4018: '<': signed/unsigned mismatch
+  Parallel Ford Fulkerson.cpp
+c:\users\nahian\source\repos\parallel ford fulkerson\parallel ford fulkerson\parallel ford fulkerson.cpp(70): warning C4018: '<': signed/unsigned mismatch
+  ProposedFordFukerson.cpp
+c:\users\nahian\source\repos\parallel ford fulkerson\parallel ford fulkerson\proposedfordfukerson.cpp(29): warning C4018: '<': signed/unsigned mismatch
+  Generating Code...
+c:\users\nahian\source\repos\parallel ford fulkerson\parallel ford fulkerson\parallel ford fulkerson.cpp(35): warning C4715: 'getHeadNode': not all control paths return a value
   Parallel Ford Fulkerson.vcxproj -> C:\Users\Nahian\source\repos\Parallel Ford Fulkerson\Debug\Parallel Ford Fulkerson.exe

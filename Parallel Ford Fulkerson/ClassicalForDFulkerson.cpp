@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "ClassicalForDFulkerson.h"
 #include<utility>
+#include <chrono>
 
 using namespace std;
 
@@ -40,19 +41,24 @@ void ClassicalFordFulkerson::input()
 
 void ClassicalFordFulkerson::run()
 {
+	myfile.open(filePath);
 	myfile >> numberOfCases;
 	for (int it = 0; it < numberOfCases; it++)
 	{
 		input();
+		omp_set_num_threads(1);
 		for (int i = 0; i < V; i++)
 			omp_init_lock(&lck[i]);
 
+		auto start = std::chrono::high_resolution_clock::now();
 		cout << fordFulkerson()<<endl;
-
+		auto stop = std::chrono::high_resolution_clock::now();
+		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+		cout << "Time:" << duration.count() << " micro sec" << endl;
 		for (int i = 0; i < V; i++)
 			omp_destroy_lock(&lck[i]);
 	}
-	
+	myfile.close();
 }
 
 void ClassicalFordFulkerson::init()
@@ -79,9 +85,11 @@ int ClassicalFordFulkerson::fordFulkerson()
 		while (state[V - 1] == unlabeled && flag)
 		{
 			flag = 0;
+			#pragma omp parallel for shared(nextState,state,V) private(i)
 			for (int i = 0; i < V; i++)
 				nextState[i] = state[i];
 
+			#pragma omp parallel for shared(nextState,state,V,edges,flow,label,parent,labelType,flag,lck) private(i,j,u,v)
 			for (int i = 0; i < V; i++)
 			{
 
@@ -116,6 +124,7 @@ int ClassicalFordFulkerson::fordFulkerson()
 
 			}
 
+			#pragma omp parallel for shared(nextState,state,V) private(i)
 			for (int i = 0; i < V; i++)
 				state[i] = nextState[i];
 		}

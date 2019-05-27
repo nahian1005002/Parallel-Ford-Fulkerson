@@ -9,6 +9,8 @@
 #include<vector>
 #include<set>
 #include "ClassicalFordFulkerson.h"
+#include "ProposedFordFukerson.h"
+ 
 
 using namespace std;
 
@@ -79,6 +81,8 @@ int main()
 	generateInput();
 	ClassicalFordFulkerson classical("input.txt");
 	classical.run();
+	ProposedFordFukerson proposed("input.txt");
+	proposed.run();
 
 	return 0;
 }
