@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "ProposedFordFukerson.h"
 #include <chrono>
+#include <atomic>
 
 using namespace std;
 
@@ -10,56 +11,70 @@ int ProposedFordFukerson::fordFulkerson()
 	cout << "inside proposed fordfulkerson" << endl;
 	int flag = 1;
 	int maxFlow = 0;
+	int turn = 0,turnPrev=1;
 	while (flag)
 	{
 		init(); // intializing
 		state[0] = unscanned;
 		label[0] = INF;
+		scanFrontier[turn][0] = 0;
+		frontierSize[turn] = 1;
 		while (state[V - 1] == unlabeled && flag)
 		{
 			flag = 0;
-#pragma omp parallel for shared(nextState,state,V) private(i)
-			for (int i = 0; i < V; i++)
-				nextState[i] = state[i];
+			turn = 1 - turn;
+			turnPrev = 1 - turnPrev;
+			std::atomic<int> idx = 0;
 
-#pragma omp parallel for shared(nextState,state,V,edges,flow,label,parent,labelType,flag,lck) private(i,j,u,v)
-			for (int i = 0; i < V; i++)
+
+			for (int i = 0; i < frontierSize[turnPrev]; i++)
 			{
-
-				for (int j = 0; j < edges[i].size(); j++)
+				int u = scanFrontier[turnPrev][i];
+				for (int j = 0; j < edges[u].size(); j++)
 				{
-					int u = i, v = edges[i][j].first;
+					int v = edges[u][j].first;
 					grabLock(u, v);
-					//	omp_set_lock(&lck[v]);
-					if (state[u] == unscanned && state[v] == unlabeled && flow[u][j].second < edges[u][j].second)
+
+					if ( state[v] == unlabeled && flow[u][j].second < edges[u][j].second)
 					{
 						label[v] = min(label[u], edges[u][j].second - flow[u][j].second);
 						parent[v] = u;
 						labelType[v] = '+';
 
-						nextState[u] = scanned;
-						nextState[v] = unscanned;
+						state[v] = unscanned;
 						flag = 1;
-					}
-					else if (state[v] == unscanned && state[u] == unlabeled && flow[u][j].second > 0)
-					{
-						label[u] = min(label[v], flow[u][j].second);
-						parent[u] = v;
-						labelType[u] = '-';
-
-						nextState[v] = scanned;
-						nextState[u] = unscanned;
-						flag = 1;
+						scanFrontier[turn][idx++] = v;
 					}
 					omp_unset_lock(&lck[u]);
 					omp_unset_lock(&lck[v]);
 				}
+				for (int j = 0; j < backedges[u].size(); j++)
+				{
+					int w = backedges[u][j].first;
+					int k = backedges[u][j].second;
+					grabLock(u, w);
+					if (state[w] == unlabeled && flow[w][k].second > 0)
+					{
+						label[w] = min(label[u], flow[w][k].second);
+						parent[w] = u;
+						labelType[w] = '-';
 
+						state[w] = unscanned;
+						flag = 1;
+						scanFrontier[turn][idx++] = w;
+					}
+					omp_unset_lock(&lck[u]);
+					omp_unset_lock(&lck[w]);
+				}
+
+				omp_set_lock(&lck[u]);
+				state[u] = scanned;
+				omp_unset_lock(&lck[u]);
+				frontierSize[turn] = idx;
 			}
 
-#pragma omp parallel for shared(nextState,state,V) private(i)
-			for (int i = 0; i < V; i++)
-				state[i] = nextState[i];
+//			for (int i = 0; i < V; i++)
+//				state[i] = nextState[i];
 		}
 		if (!flag)
 			break;

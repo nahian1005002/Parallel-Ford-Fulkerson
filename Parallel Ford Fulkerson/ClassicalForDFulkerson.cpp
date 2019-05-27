@@ -34,7 +34,7 @@ void ClassicalFordFulkerson::input()
 	{
 		myfile >> u >> v >> w;
 		edges[u].push_back(make_pair(v, w));
-		backedges[v].push_back(make_pair(u, w));
+		backedges[v].push_back(make_pair(u, edges[u].size()-1));
 		flow[u].push_back(make_pair(v, 0));
 	}
 }
