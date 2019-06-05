@@ -46,7 +46,7 @@ void ClassicalFordFulkerson::run()
 	for (int it = 0; it < numberOfCases; it++)
 	{
 		input();
-		omp_set_num_threads(1);
+		omp_set_num_threads(4);
 		for (int i = 0; i < V; i++)
 			omp_init_lock(&lck[i]);
 

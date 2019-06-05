@@ -2,6 +2,7 @@
 #include "ProposedFordFukerson.h"
 #include <chrono>
 #include <atomic>
+ 
 
 using namespace std;
 
@@ -26,7 +27,7 @@ int ProposedFordFukerson::fordFulkerson()
 			turnPrev = 1 - turnPrev;
 			std::atomic<int> idx = 0;
 
-
+#pragma omp parallel for shared(scanFrontier, turnPrev, state,V,edges,flow,label,parent,labelType,flag,lck) private(i,j,u,v,w,k)
 			for (int i = 0; i < frontierSize[turnPrev]; i++)
 			{
 				int u = scanFrontier[turnPrev][i];
@@ -73,8 +74,6 @@ int ProposedFordFukerson::fordFulkerson()
 				frontierSize[turn] = idx;
 			}
 
-//			for (int i = 0; i < V; i++)
-//				state[i] = nextState[i];
 		}
 		if (!flag)
 			break;
@@ -115,7 +114,7 @@ void ProposedFordFukerson::run()
 	for (int it = 0; it < numberOfCases; it++)
 	{
 		input();
-		omp_set_num_threads(1);
+		omp_set_num_threads(4);
 		for (int i = 0; i < V; i++)
 			omp_init_lock(&lck[i]);
 

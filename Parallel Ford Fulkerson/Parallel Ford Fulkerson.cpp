@@ -42,7 +42,7 @@ void generateInput()
 		cout << "failed to create file\n";
 		return;
 	}
-	int numberOfTests = 2; 
+	int numberOfTests = 10; 
 	myfile << numberOfTests << endl;
 	int V, cardinality=5;
 	vector<Edge> edges;
