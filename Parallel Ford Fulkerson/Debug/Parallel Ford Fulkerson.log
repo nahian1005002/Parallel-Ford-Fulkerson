@@ -1,4 +1,10 @@
-﻿  Parallel Ford Fulkerson.cpp
-c:\users\nahian\source\repos\parallel ford fulkerson\parallel ford fulkerson\parallel ford fulkerson.cpp(70): warning C4018: '<': signed/unsigned mismatch
-c:\users\nahian\source\repos\parallel ford fulkerson\parallel ford fulkerson\parallel ford fulkerson.cpp(35): warning C4715: 'getHeadNode': not all control paths return a value
+﻿  ClassicalForDFulkerson.cpp
+c:\users\nahian\source\repos\parallel ford fulkerson\parallel ford fulkerson\classicalfordfulkerson.cpp(11): warning C4018: '<': signed/unsigned mismatch
+c:\users\nahian\source\repos\parallel ford fulkerson\parallel ford fulkerson\classicalfordfulkerson.cpp(16): warning C4018: '<': signed/unsigned mismatch
+c:\users\nahian\source\repos\parallel ford fulkerson\parallel ford fulkerson\classicalfordfulkerson.cpp(99): warning C4018: '<': signed/unsigned mismatch
+  ProposedFordFukerson.cpp
+c:\users\nahian\source\repos\parallel ford fulkerson\parallel ford fulkerson\proposedfordfukerson.cpp(34): warning C4018: '<': signed/unsigned mismatch
+c:\users\nahian\source\repos\parallel ford fulkerson\parallel ford fulkerson\proposedfordfukerson.cpp(52): warning C4018: '<': signed/unsigned mismatch
+  Generating Code...
+  LINK : C:\Users\Nahian\source\repos\Parallel Ford Fulkerson\Debug\Parallel Ford Fulkerson.exe not found or not built by the last incremental link; performing full link
   Parallel Ford Fulkerson.vcxproj -> C:\Users\Nahian\source\repos\Parallel Ford Fulkerson\Debug\Parallel Ford Fulkerson.exe

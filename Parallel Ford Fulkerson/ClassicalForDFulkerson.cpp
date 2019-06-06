@@ -41,12 +41,13 @@ void ClassicalFordFulkerson::input()
 
 void ClassicalFordFulkerson::run()
 {
+	double total=0;
 	myfile.open(filePath);
 	myfile >> numberOfCases;
 	for (int it = 0; it < numberOfCases; it++)
 	{
 		input();
-		omp_set_num_threads(4);
+		omp_set_num_threads(1);
 		for (int i = 0; i < V; i++)
 			omp_init_lock(&lck[i]);
 
@@ -54,11 +55,13 @@ void ClassicalFordFulkerson::run()
 		cout << fordFulkerson()<<endl;
 		auto stop = std::chrono::high_resolution_clock::now();
 		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-		cout << "Time:" << duration.count() << " micro sec" << endl;
+		cout << "Time: " << duration.count() << " micro sec" << endl;
+		total = total + duration.count() / 1000000.0;
 		for (int i = 0; i < V; i++)
 			omp_destroy_lock(&lck[i]);
 	}
 	myfile.close();
+	cout << "Total :" << total<<endl; 
 }
 
 void ClassicalFordFulkerson::init()
